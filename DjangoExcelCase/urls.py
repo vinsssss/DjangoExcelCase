@@ -16,6 +16,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+import display
 from display.views import IndexView
 from user.views import LoginView, RegisterView, LogoutView
 
@@ -25,5 +26,5 @@ urlpatterns = [
     path('register/', RegisterView.as_view(), name='register'),
     path('index/', IndexView.as_view(), name='index'),
     path('logout/', LogoutView.as_view(), name='logout'),
-
+    path('upload/', display.views.upload_file)
 ]
