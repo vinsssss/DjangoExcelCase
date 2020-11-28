@@ -1,8 +1,47 @@
+import os
+
+from django.core.exceptions import ValidationError
 from django.db import models
+
+
+# def rename_file(instance, filename):
+#     if filename.endswith('.xlsx') or filename.endswith('xls'):
+#         exist_excel = models.Excel.objects.filter(file_name=filename)
+#         if exist_excel:
+#             # 防止命名重复
+#             max_id = models.Excel.objects.all().order_by('-id')[0].id + 1
+#             filename = '(' + str(max_id) + ')' + filename
+#         return filename
+
+
+def check_filename_available(instance, filename):
+    n = [0]
+
+    def check_meta(file_name):
+        file_name_new = file_name
+        if os.path.isfile(file_name):
+            file_name_new = file_name[:file_name.rfind('.')] + '_' + str(n[0]) + file_name[
+                                                                                 file_name.rfind('.'):]
+            n[0] += 1
+        if os.path.isfile(file_name_new):
+            file_name_new = check_meta(file_name)
+        return file_name_new
+
+    return_name = check_meta(filename)
+    return return_name
+
+
+def validate_excel(file):
+    filename = file.name
+    if not (filename.endswith('.xlsx') or filename.endswith('xls')):
+        raise ValidationError("File not excel")
+
 
 class Excel(models.Model):
     # 文件名
     file_name = models.CharField(max_length=128, null=False, unique=True, verbose_name="文件名")
+    # 文件
+    file = models.FileField(upload_to=check_filename_available, default=' ', validators=[validate_excel])
     # 文件上传时间
     creat_time = models.DateTimeField(auto_now_add=True, verbose_name="文件上传时间")
     # 文件上传创建者
