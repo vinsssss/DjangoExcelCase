@@ -7,8 +7,8 @@ from django.shortcuts import render, redirect
 from django.views import View
 
 from display import models
-from display.models import Excel
-
+from display.models import Excel, Items
+from display.excelDealUtil import ExcelDealUtil
 
 class IndexView(View):
 
@@ -34,6 +34,7 @@ def upload_file(request):
                         excel_name = '(' + str(max_id) + ')' + excel_name
 
                     file_path = os.path.dirname(os.path.dirname(__file__)) + '/static/excels/' + excel_name
+                    print(file_path)
                     with open(file_path, 'wb') as f:
                         for chunk in file.chunks():
                             f.write(chunk)
@@ -45,12 +46,23 @@ def upload_file(request):
                     my_excel.creat_by = request.session['user_name']
                     my_excel.save()
 
+                    my_excel_util = ExcelDealUtil(file_path)
+                    data = my_excel_util.read_data()
+                    for data_item in data:
+                        my_item = Items()
+                        if my_item.set_data(data_item):
+                            my_item.creat_by = request.session['user_name']
+                            my_item.come_from = my_excel
+                            my_item.save()
+                        else:
+                            raise Exception('添加数据失败！')
                     message = '[OK]上传成功!'
                     return render(request, 'index.html', locals())
                 else:
                     raise Exception('文件类型不符！')
             else:
                 raise Exception('文件获取失败！')
-        except:
+        except Exception as e:
             message = '[ERROR]上传失败!'
+            print(e)
             return render(request, 'index.html', locals())
