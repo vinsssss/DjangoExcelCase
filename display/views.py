@@ -8,7 +8,7 @@ from django.views import View
 
 from display import models
 from display.models import Excel, Items
-from display.excelDealUtil import ExcelDealUtil
+from display.ExcelMixin import ExcelMixin
 
 class IndexView(View):
 
@@ -46,7 +46,7 @@ def upload_file(request):
                     my_excel.creat_by = request.session['user_name']
                     my_excel.save()
 
-                    my_excel_util = ExcelDealUtil(file_path)
+                    my_excel_util = ExcelMixin(file_path)
                     data = my_excel_util.read_data()
                     for data_item in data:
                         my_item = Items()

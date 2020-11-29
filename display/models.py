@@ -3,7 +3,6 @@ import os
 from django.core.exceptions import ValidationError
 from django.db import models
 
-
 # def rename_file(instance, filename):
 #     if filename.endswith('.xlsx') or filename.endswith('xls'):
 #         exist_excel = models.Excel.objects.filter(file_name=filename)
@@ -12,6 +11,7 @@ from django.db import models
 #             max_id = models.Excel.objects.all().order_by('-id')[0].id + 1
 #             filename = '(' + str(max_id) + ')' + filename
 #         return filename
+from DjangoExcelCase import settings
 
 
 def check_filename_available(instance, filename):
@@ -38,10 +38,11 @@ def validate_excel(file):
 
 
 class Excel(models.Model):
-    # 文件名
-    file_name = models.CharField(max_length=128, null=False, unique=True, verbose_name="文件名")
+    # 文件备注名
+    file_name = models.CharField(max_length=128, null=False, unique=True, verbose_name="文件备注名")
     # 文件
-    file = models.FileField(upload_to=check_filename_available, default=' ', validators=[validate_excel])
+    # upload_to=settings.MEDIA_ROOT + check_filename_available
+    file = models.FileField(upload_to='./', default=' ',  verbose_name="文件", validators=[validate_excel])
     # 文件上传时间
     creat_time = models.DateTimeField(auto_now_add=True, verbose_name="文件上传时间")
     # 文件上传创建者

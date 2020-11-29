@@ -13,18 +13,24 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+import django
+from django.conf.urls import url
 from django.contrib import admin
 from django.urls import path
 
 import display
+from DjangoExcelCase import settings
 from display.views import IndexView
 from user.views import LoginView, RegisterView, LogoutView
+from django.views.static import serve
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('login/', LoginView.as_view(), name='login'),
-    path('register/', RegisterView.as_view(), name='register'),
-    path('index/', IndexView.as_view(), name='index'),
-    path('logout/', LogoutView.as_view(), name='logout'),
-    path('upload/', display.views.upload_file)
+    path('', admin.site.urls),
+    # path('login/', LoginView.as_view(), name='login'),
+    # path('register/', RegisterView.as_view(), name='register'),
+    # path('index/', IndexView.as_view(), name='index'),
+    # path('logout/', LogoutView.as_view(), name='logout'),
+    # path('upload/', display.views.upload_file),
+    # 文件下载
+    url(r'^excels/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
 ]

@@ -24,7 +24,7 @@ SECRET_KEY = '#=z4k6-_3fjegl)n0%e74bzhwle_j4ej45rqoeeiae8%qmvv&p'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -63,6 +63,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.media',
             ],
         },
     },
@@ -135,4 +136,6 @@ STATICFILES_DIRS = [  # 项目静态文件的配置
     os.path.join(BASE_DIR, "static")
 ]
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'static/excels')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'excels')
+MEDIA_URL = '/excels/'
+
